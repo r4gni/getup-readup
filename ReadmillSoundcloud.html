@@ -4,7 +4,9 @@
 <title>Readmill test</title>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <!-- Bootstrap -->
-<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+
+
+<link rel="stylesheet" href="bootstrap/css/bootstrap.css">
 <script src="http://connect.soundcloud.com/sdk.js"></script>
 <script type="text/javascript"
     src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js">
@@ -52,7 +54,7 @@ $.getJSON("https://api.readmill.com/v2/users/search.json?query=henrik&client_id=
 		console.log(item.reading.book.cover_url);
 		buch_id = item.reading.id;
 		reading_ids.push(buch_id);
-		image += '<img id=' + buch_id + ' src="' + item.reading.book.cover_url + '"/>';
+		image += '<img data-gallery="gallery" id=' + buch_id + ' src="' + item.reading.book.cover_url + '"/>';
 		console.log(item.reading.id);
 		console.log(item.reading.highlights_count);
 		$("#buch1").html(image); 
@@ -107,7 +109,7 @@ $.getJSON("https://api.readmill.com/v2/users/search.json?query=henrik&client_id=
 					//console.log(data.items[0].highlight.content)
 					var zahl = data.items.length;
 					var pseudo_random_highlight = Math.floor((Math.random()*zahl));
-					highlight = '<h2>' + data.items[pseudo_random_highlight].highlight.content + '</h2>';
+					highlight = '<blockquote class="pull-center"> <p class="curly-quotes">' + data.items[pseudo_random_highlight].highlight.content + '</p></blockquote> <p />';
 					$("#highlight").html(highlight);
 					$("#highlight").data("buch-id", pseudo_random_buch);
 			})
@@ -121,9 +123,15 @@ $.getJSON("https://api.readmill.com/v2/users/search.json?query=henrik&client_id=
 </head>
 <body onload="initialize()">
 	<script src="http://code.jquery.com/jquery.js"></script>
-	<script src="js/bootstrap.min.js"></script>
+	<script src="Bootstrap-Image-Gallery-master/js/bootstrap.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script src="http://blueimp.github.com/cdn/js/bootstrap.min.js"></script>
+	<script src="http://blueimp.github.com/JavaScript-Load-Image/load-image.min.js"></script>
+	<script src="Bootstrap-Image-Gallery-masterjs/bootstrap-image-gallery.min.js"></script>
+	<p />
+	<p />
 <div id="highlight" data-buch-id="0"></div>
 <p>
-<div id="buch1"></div>
+<div id="buch1" style="padding-left:100px; padding-right:100px;"></div>
 </body>
 </html>
