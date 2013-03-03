@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Readmill test</title>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<!-- Bootstrap -->
+<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+<script src="http://connect.soundcloud.com/sdk.js"></script>
+<script type="text/javascript"
+    src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js">
+</script>
+<script type="text/javascript">
+  var clientId = '90b65760e25e2e7a53b7b67210c59b59';
+  var clientSecret = 'xx';
+  var gsound;
+  var track_counter = 0;
+  var reading_ids = new Array();
+function playTrack(trackID) {
+		SC.stream("/tracks/" + trackID, function(sound) {	//57285174
+						gsound = sound;
+						sound.play({
+						  onfinish: function() {
+						    playTrack();
+						    console.log("play next")
+						  }}); //sound.stop() um zu stoppen (?) 
+						}); 
+	}
+function initialize() {
+
+	SC.initialize({
+	  client_id: "9342ecf380f418b5bdc5f34a11d3329c"
+	 });
+	    playTrack(57285174);
+	
+//***************************User-ID holen***************************
+
+$.getJSON("https://api.readmill.com/v2/users/search.json?query=henrik&client_id="+clientId+"&callback=?",
+      function(data) {
+	$(data.items).each(function(i, item){
+	 
+	console.log(item.user.permalink_url +"ID: "+item.user.id);
+                                         });
+	
+                      });	 
+
+//***************************Readings des Users holen***************************
+  //36657 = ich, pylon = 220, henrik = 2
+ $.getJSON("https://api.readmill.com/v2/users/2/readings?highlights_count[from]=1.json&client_id="+clientId+"&callback=?",
+      function(data) {
+		var image ="";
+        $(data.items).each(function(i, item){
+		console.log(item.reading.book.cover_url);
+		buch_id = item.reading.id;
+		reading_ids.push(buch_id);
+		image += '<img id=' + buch_id + ' src="' + item.reading.book.cover_url + '"/>';
+		console.log(item.reading.id);
+		console.log(item.reading.highlights_count);
+		$("#buch1").html(image); 
+		$("img").click(function(){
+			console.log("id", $(this).attr("id"));
+			if($("#highlight").data("buch-id") == $(this).attr("id")) {
+				//alert("richtig");
+				gsound.stop();
+				window.location.replace("http://localhost/");
+			} else {
+				//$("img").hide();
+				//setTimeout(function(){ $("img").show(); }, 2000);
+				if (track_counter <= 4) {
+					track_counter++;
+				} else {
+					counter = 4;
+				}
+				gsound.stop();
+				var track_id;
+				switch(track_counter) {
+					case 0:
+					  track_id=57285174;
+					  break;
+					case 1:
+					  track_id=45617606;
+					  break;
+					case 2:
+					  track_id=35428136;
+					  break;
+					case 3:
+					  track_id=35117279;
+					  break;
+					case 4:
+					  track_id=54579601;
+					  break;
+				}
+				playTrack(track_id);
+			}
+		});	
+		});
+		
+		var pseudo_random_zahl = Math.floor((Math.random()*6));
+		var pseudo_random_buch = reading_ids[pseudo_random_zahl];
+		//buchid von highlight = 109962
+		console.log("Das gesuchte Buch ist: ");
+		console.log(pseudo_random_zahl + 1);
+			
+				
+// ***************************Highlight holen***************************
+				$.getJSON("https://api.readmill.com/v2/readings/"+pseudo_random_buch+"/highlights.json?client_id="+clientId+"&callback=?",
+			      function(data) {
+					//console.log(data.items[0].highlight.content)
+					var zahl = data.items.length;
+					var pseudo_random_highlight = Math.floor((Math.random()*zahl));
+					highlight = '<h2>' + data.items[pseudo_random_highlight].highlight.content + '</h2>';
+					$("#highlight").html(highlight);
+					$("#highlight").data("buch-id", pseudo_random_buch);
+			})
+		
+      });
+  }
+
+
+
+</script>
+</head>
+<body onload="initialize()">
+	<script src="http://code.jquery.com/jquery.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+<div id="highlight" data-buch-id="0"></div>
+<p>
+<div id="buch1"></div>
+</body>
+</html>
