@@ -31,6 +31,8 @@
   border: 0;
 }
 
+
+
 .input-block-level {
   display: block;
   width: 100%;
@@ -918,6 +920,9 @@ blockquote {
   margin: 0 0 20px;
   border-left: 5px solid #eeeeee;
   text-align: center;
+  background:#FFF55C;
+  float:center;
+  clear: center;
 }
 
 blockquote p {
@@ -949,7 +954,14 @@ blockquote.pull-right {
 blockquote.pull-center p,
 blockquote.pull-center small {
 	text-align: center;
-	font-size: 25px;
+	font-size: 30px;
+	
+}
+
+p.hint{
+	text-align:center;
+	font-size:14px;
+	
 }
 
 blockquote.pull-center p:before,

@@ -1,6 +1,6 @@
 #plugin_container {
     width:500px;
-    height:420px;
+    height:250px;
     position:relative;
     background:white;
     overflow:hidden;
@@ -30,7 +30,7 @@
 
 #digital_container {
     width:500px;
-    height:360px;
+    height:200px;
     background:white;
     position:absolute;
     top:40px;
