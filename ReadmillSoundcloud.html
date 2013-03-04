@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Readmill test</title>
+<title>GetUp-ReadUp</title>
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 <!-- Bootstrap -->
 
@@ -14,8 +14,11 @@
 <script type="text/javascript">
   var clientId = '90b65760e25e2e7a53b7b67210c59b59';
   var clientSecret = 'xx';
+  /* making sound global (the dirty way)   */
   var gsound;
+  /*  selecting the songs via a switch statement  */
   var track_counter = 0;
+  /*  All the Books with Highlights of the User in an Array  */
   var reading_ids = new Array();
 function playTrack(trackID) {
 		SC.stream("/tracks/" + trackID, function(sound) {	//57285174
@@ -36,6 +39,13 @@ function initialize() {
 	
 //***************************User-ID holen***************************
 
+/*  
+	If you need a UserID put there name behind the query tag... 
+	prints out a matching bunch in the console
+	
+	we should add oAuth
+*/
+
 $.getJSON("https://api.readmill.com/v2/users/search.json?query=henrik&client_id="+clientId+"&callback=?",
       function(data) {
 	$(data.items).each(function(i, item){
@@ -46,18 +56,36 @@ $.getJSON("https://api.readmill.com/v2/users/search.json?query=henrik&client_id=
                       });	 
 
 //***************************Readings des Users holen***************************
-  //36657 = ich, pylon = 220, henrik = 2
- $.getJSON("https://api.readmill.com/v2/users/2/readings?highlights_count[from]=1.json&client_id="+clientId+"&callback=?",
+
+ 
+/*  
+	Get all the Books of the user with at least 1 Highlight 
+	Some UserIDs: jule = 36657, pylon = 220, henrik = 2
+*/
+
+$.getJSON("https://api.readmill.com/v2/users/2/readings?highlights_count[from]=1.json&client_id="+clientId+"&callback=?",
       function(data) {
 		var image ="";
         $(data.items).each(function(i, item){
-		console.log(item.reading.book.cover_url);
+		//console.log(item.reading.book.cover_url);
 		buch_id = item.reading.id;
 		reading_ids.push(buch_id);
 		image += '<img data-gallery="gallery" id=' + buch_id + ' src="' + item.reading.book.cover_url + '"/>';
-		console.log(item.reading.id);
-		console.log(item.reading.highlights_count);
+		//console.log(item.reading.id);
+		//console.log(item.reading.highlights_count);
 		$("#buch1").html(image); 
+		
+		/* 
+		
+		what happens when you click on a bookcover:
+		
+		Book and highlight match: sound stops, get relocated to index page
+		Book and highlight do not match: counts how often you click the wrong cover 
+		and switches to next song accordingly. 
+				
+		 */
+		 
+		 
 		$("img").click(function(){
 			console.log("id", $(this).attr("id"));
 			if($("#highlight").data("buch-id") == $(this).attr("id")) {
@@ -97,6 +125,7 @@ $.getJSON("https://api.readmill.com/v2/users/search.json?query=henrik&client_id=
 		});
 		
 		var pseudo_random_zahl = Math.floor((Math.random()*6));
+		/* 	selects a random book from the array	 */
 		var pseudo_random_buch = reading_ids[pseudo_random_zahl];
 		//buchid von highlight = 109962
 		console.log("Das gesuchte Buch ist: ");
@@ -104,11 +133,22 @@ $.getJSON("https://api.readmill.com/v2/users/search.json?query=henrik&client_id=
 			
 				
 // ***************************Highlight holen***************************
-				$.getJSON("https://api.readmill.com/v2/readings/"+pseudo_random_buch+"/highlights.json?client_id="+clientId+"&callback=?",
+
+/*  
+	get the highlight from one of the books (from the array)
+	highlight of the book is also choosen by random 
+*/
+				
+$.getJSON("https://api.readmill.com/v2/readings/"+pseudo_random_buch+"/highlights.json?client_id="+clientId+"&callback=?",
 			      function(data) {
 					//console.log(data.items[0].highlight.content)
+					/* 	
+					an array is returned so we save it's lenght 
+					for shuffeling through them to not allways get the same highlight for a book
+					*/
 					var zahl = data.items.length;
 					var pseudo_random_highlight = Math.floor((Math.random()*zahl));
+					/* 		generate html for the highlight			 */
 					highlight = '<blockquote class="pull-center"> <p class="curly-quotes">' + data.items[pseudo_random_highlight].highlight.content + '</p></blockquote> <p />';
 					$("#highlight").html(highlight);
 					$("#highlight").data("buch-id", pseudo_random_buch);
@@ -130,10 +170,13 @@ $.getJSON("https://api.readmill.com/v2/users/search.json?query=henrik&client_id=
 	<script src="Bootstrap-Image-Gallery-masterjs/bootstrap-image-gallery.min.js"></script>
 	<p />
 	<p />
+
 <div id="highlight" data-buch-id="0"></div>
 <p>
+
 <p class="hint">This is a highlight from a book you have read recently. Click on its cover to stop the alarm.</p>
 <br />
+
 <div id="buch1" style="padding-left:100px; padding-right:100px;"></div>
 </body>
 </html>
