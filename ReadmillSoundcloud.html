@@ -37,12 +37,11 @@ function playTrack(trackID) {
 	
 //***************************bpm***************************
 
-function setTrack(setBpm) {
+function setTrack() {
 	
 SC.get('/tracks', { genres: genre, streamable: true },
   function(tracks) {
-    //FIRST soundcloud sends back an array of 50 objects (0~49)
-    //console.log(tracks);
+        //console.log(tracks);
       var random = Math.floor(Math.random() * 49);
       track_id=tracks[random].id;
       //var track_url = tracks[random].permalink_url;
