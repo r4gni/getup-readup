@@ -16,8 +16,12 @@
   var clientSecret = 'xx';
   /* making sound global (the dirty way)   */
   var gsound;
+  var track_id;
   /*  selecting the songs via a switch statement  */
   var track_counter = 0;
+  var genre = 'house';
+  
+  
   /*  All the Books with Highlights of the User in an Array  */
   var reading_ids = new Array();
 function playTrack(trackID) {
@@ -30,6 +34,21 @@ function playTrack(trackID) {
 						  }}); //sound.stop() um zu stoppen (?) 
 						}); 
 	}
+	
+//***************************bpm***************************
+
+function setTrack(setBpm) {
+	
+SC.get('/tracks', { genres: genre, streamable: true },
+  function(tracks) {
+    //FIRST soundcloud sends back an array of 50 objects (0~49)
+    //console.log(tracks);
+      var random = Math.floor(Math.random() * 49);
+      track_id=tracks[random].id;
+      //var track_url = tracks[random].permalink_url;
+      }
+);
+}
 function initialize() {
 
 	SC.initialize({
@@ -50,7 +69,7 @@ $.getJSON("https://api.readmill.com/v2/users/search.json?query=henrik&client_id=
       function(data) {
 	$(data.items).each(function(i, item){
 	 
-	console.log(item.user.permalink_url +"ID: "+item.user.id);
+	//console.log(item.user.permalink_url +"ID: "+item.user.id);
                                          });
 	
                       });	 
@@ -101,25 +120,13 @@ $.getJSON("https://api.readmill.com/v2/users/2/readings?highlights_count[from]=1
 					counter = 4;
 				}
 				gsound.stop();
-				var track_id;
-				switch(track_counter) {
-					case 0:
-					  track_id=57285174;
-					  break;
-					case 1:
-					  track_id=45617606;
-					  break;
-					case 2:
-					  track_id=35428136;
-					  break;
-					case 3:
-					  track_id=54579601;
-					  break;
-					case 4:
-					  track_id=37591421;
-					  break;
-				}
+				
+				
+				setTrack();
 				playTrack(track_id);
+				SC.get('/tracks/'+ track_id, function(info){
+					console.log(info.title + ' BPM:' + info.bpm + ' Genre:' + info.genre);
+				});
 			}
 		});	
 		});
@@ -155,6 +162,9 @@ $.getJSON("https://api.readmill.com/v2/readings/"+pseudo_random_buch+"/highlight
 			})
 		
       });
+      
+	
+      
   }
 
 
