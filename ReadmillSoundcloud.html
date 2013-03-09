@@ -35,7 +35,7 @@ function playTrack(trackID) {
 						}); 
 	}
 	
-//***************************bpm***************************
+//***************************Genre***************************
 
 function setTrack() {
 	
@@ -46,8 +46,11 @@ SC.get('/tracks', { genres: genre, streamable: true },
       track_id=tracks[random].id;
       //var track_url = tracks[random].permalink_url;
       }
-);
+    );
 }
+
+//***************************SC Initialize***************************
+
 function initialize() {
 
 	SC.initialize({
@@ -55,7 +58,7 @@ function initialize() {
 	 });
 	    playTrack(57285174);
 	
-//***************************User-ID holen***************************
+//***************************Readmill User-ID holen***************************
 
 /*  
 	If you need a UserID put there name behind the query tag... 
@@ -88,7 +91,7 @@ $.getJSON("https://api.readmill.com/v2/users/2/readings?highlights_count[from]=1
 		//console.log(item.reading.book.cover_url);
 		buch_id = item.reading.id;
 		reading_ids.push(buch_id);
-		image += '<img data-gallery="gallery" id=' + buch_id + ' src="' + item.reading.book.cover_url + '"/>';
+		image += '<li class="span3"><a href="#" class="thumbnail"><img id=' + buch_id + ' src=" ' + item.reading.book.cover_url + '"/></a></li>';
 		//console.log(item.reading.id);
 		//console.log(item.reading.highlights_count);
 		$("#buch1").html(image); 
@@ -172,20 +175,32 @@ $.getJSON("https://api.readmill.com/v2/readings/"+pseudo_random_buch+"/highlight
 </head>
 <body onload="initialize()">
 	<script src="http://code.jquery.com/jquery.js"></script>
-	<script src="Bootstrap-Image-Gallery-master/js/bootstrap.min.js"></script>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-	<script src="http://blueimp.github.com/cdn/js/bootstrap.min.js"></script>
-	<script src="http://blueimp.github.com/JavaScript-Load-Image/load-image.min.js"></script>
-	<script src="Bootstrap-Image-Gallery-masterjs/bootstrap-image-gallery.min.js"></script>
 	<p />
 	<p />
 
-<div id="highlight" data-buch-id="0"></div>
-<p>
+<div class="container">
+	
+	<div class="row">
+	<div class="span12">
+		<div class="navbar navbar-fixed-top">
+		<div id="highlight" data-buch-id="0"></div>
+		</div>
+		<p>
 
-<p class="hint">This is a highlight from a book you have read recently. Click on its cover to stop the alarm.</p>
-<br />
-
-<div id="buch1" style="padding-left:100px; padding-right:100px;"></div>
+			<p class="hint">This is a highlight from a book you have read recently. Click on its 			cover to stop 			the alarm.</p>
+			<br />
+		</p>
+	</div>
+	
+	<div class="row">
+	<div class="span12">
+		<ul class="thumbnails" id="buch1"></ul>
+	</div>
+	</div>
+	
+	</div>
+</div>
+	
 </body>
 </html>
