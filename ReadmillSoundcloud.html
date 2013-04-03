@@ -20,14 +20,16 @@
   /*  selecting the songs via a switch statement  */
   var track_counter = 0;
   var genre = 'house';
+  var favs = 5;
   
-  
+  /*mmmmerge*/
   /*  All the Books with Highlights of the User in an Array  */
   var reading_ids = new Array();
 function playTrack(trackID) {
 		SC.stream("/tracks/" + trackID, function(sound) {	//57285174
 						gsound = sound;
 						sound.play({
+						  from: 500,
 						  onfinish: function() {
 						    playTrack();
 						    console.log("play next")
@@ -39,7 +41,7 @@ function playTrack(trackID) {
 
 function setTrack() {
 	
-SC.get('/tracks', { genres: genre, streamable: true },
+SC.get('/tracks', { genres: genre, streamable: true, favoritings_count: favs },
   function(tracks) {
         //console.log(tracks);
       var random = Math.floor(Math.random() * 49);
@@ -112,14 +114,16 @@ $.getJSON("https://api.readmill.com/v2/users/2/readings?highlights_count[from]=1
 			if($("#highlight").data("buch-id") == $(this).attr("id")) {
 				//alert("richtig");
 				gsound.stop();
-				window.location.replace("http://localhost/");
+				window.location.replace("http://localhost/~Piratinjule/getupreadup/");
 			} else {
 				//$("img").hide();
 				//setTimeout(function(){ $("img").show(); }, 2000);
 				if (track_counter <= 4) {
 					track_counter++;
+					favs--;
 				} else {
 					counter = 4;
+					favs = 0;
 				}
 				gsound.stop();
 				
